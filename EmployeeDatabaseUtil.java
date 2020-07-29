@@ -34,7 +34,7 @@ public class EmployeeDatabaseUtil {
 			connection = DriverManager.getConnection(url, user, password);
 			employees = new Employee[max];
 			maxIndex = max;
-		//	insertPreparedStatement = connection.prepareStatement("insert into employee_master values(?,?,?)");
+		
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -77,6 +77,9 @@ return false;
 	public boolean updateEmployee(int employeeId, double newSalary, String name) throws SQLException {
 		for (Employee employees : employeeList) {
 			if (employees.getEmployeeId() == employeeId) {
+				if(connection!=null)
+				{
+				
 				sql = "update employee_master set name=? , salary=? where employee_id=?";
 				 preparedStatement= connection.prepareStatement(sql);
 				 preparedStatement.setString(1, name);
@@ -85,6 +88,7 @@ return false;
 				 preparedStatement.executeUpdate();
 
 				return true;
+			}
 			}
 		}
 		return false;
@@ -107,12 +111,26 @@ return false;
 
 	}
 
-	public Employee getEmployeeByEmployeeId(int employeeId) {
+	public Employee getEmployeeByEmployeeId(int employeeId)throws SQLException {
 		for (Employee employees : employeeList) {
 			if (employees != null) {
-				if (employees.getEmployeeId() == employeeId)
-					return employees;
+				if(connection!=null)
+				{
+					sql = "select * from employee_master where employee_id=?";
+					preparedStatement = connection.prepareStatement(sql);
+					preparedStatement.setInt(1, employeeId);
+					resultSet = preparedStatement.executeQuery();
 
+					while (resultSet.next()) {
+						if(resultSet.getInt("employee_id")==employeeId)
+						System.out.println("Employee Id :: " + resultSet.getInt("employee_id"));
+						System.out.println("Name :: " + resultSet.getString("name"));
+						System.out.println("Salary :: " + resultSet.getDouble("salary"));
+						System.out.println("----------------------------------------");
+					
+					}
+				}
+					return employees;
 			}
 		}
 		return null;
@@ -120,9 +138,11 @@ return false;
 	}
 
 	public List<Employee> getAllEmployees() throws SQLException {
-		sql = "select * from employee_master order by employee_id";
-		statement = connection.createStatement();
-		resultSet = statement.executeQuery(sql);
+		if(connection!=null)
+		{
+		sql = "select * from employee_master";
+		preparedStatement = connection.prepareStatement(sql);
+		resultSet = preparedStatement.executeQuery();
 
 		while (resultSet.next()) {
 			employee1 = new Employee();
@@ -131,7 +151,7 @@ return false;
 			employee1.setSalary(resultSet.getDouble("salary"));
 			employeeList.add(employee1);
 		}
-
+		}
 		return employeeList;
 
 	}
