@@ -25,6 +25,7 @@ public class EmployeeDatabaseMain{
 		String userChoice;
 
 		do {
+			
 			employeeList = util.getAllEmployees();
 			for (Employee emp : employeeList) {
 				if (emp != null) {
@@ -62,7 +63,7 @@ public class EmployeeDatabaseMain{
 				}
 				break;
 			case 2:
-				System.out.println("How many employee details");
+				System.out.println("Enter number of employees to be added many");
 				int numberOfEmployee = scanner.nextInt();
 				employees = new Employee[numberOfEmployee];
 				for (int i = 0; i < numberOfEmployee; i++) {
